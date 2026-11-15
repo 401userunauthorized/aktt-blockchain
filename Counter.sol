@@ -69,4 +69,10 @@ contract Example {
     function get_counter_value() external view returns(uint) {
         return counter.number;
     }
+
+    // This function returns the description field of our counter struct.
+    // Like get_counter_value, it is a query function: it only reads data and costs no gas.
+    function get_counter_description() external view returns(string memory) {
+        return counter.description;
+    }
 }
