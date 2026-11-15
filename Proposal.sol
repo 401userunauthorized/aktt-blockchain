@@ -4,8 +4,14 @@ contract ProposalContract {
 
     address owner;
 
+    modifier active() {
+        require(proposal_history[counter].is_active == true, "The proposal is not active");
+        _;
+    }
+    
     constructor() {
-      owner = msg.sender;
+        owner = msg.sender;
+        voted_addresses.push(msg.sender);
     }
 
     uint256 private counter;
@@ -22,6 +28,7 @@ contract ProposalContract {
     }
 
     mapping(uint256 => Proposal) proposal_history; // Recordings of previous proposals
+    address[]  private voted_addresses;
 
     function create(string calldata _title, string calldata _description, uint256 _total_vote_to_end) external {
         counter += 1;
