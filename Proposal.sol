@@ -82,16 +82,33 @@ contract ProposalContract {
         }
     }
 
+    // Terminates the current proposal. Only the owner can call it,
+    // and only while the current proposal is still active.
+    function teminateProposal() external onlyOwner active {
+        proposal_history[counter].is_active = false;
+    }
+
 
     // ****************** Query Functions ***********************
 
+    // Returns whether the given address has already voted
     function isVoted(address _address) public view returns (bool) {
-        for (uint256 i = 0; i < voted_addresses.length; i++) {
+        for (uint i = 0; i < voted_addresses.length; i++) {
             if (voted_addresses[i] == _address) {
                 return true;
             }
         }
         return false;
+    }
+
+    // Returns the current proposal
+    function getCurrentProposal() external view returns(Proposal memory) {
+        return proposal_history[counter];
+    }
+
+    // Returns a specific proposal by its number
+    function getProposal(uint256 number) external view returns(Proposal memory) {
+        return proposal_history[number];
     }
 
 
