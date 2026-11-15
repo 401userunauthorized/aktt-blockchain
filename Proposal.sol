@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 contract ProposalContract {
-
+    uint256 private counter;
     struct Proposal {
         string title; // Title of the proposal
         string description; // Description of the proposal
