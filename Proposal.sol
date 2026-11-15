@@ -28,4 +28,24 @@ contract ProposalContract {
         proposal_history[counter] = Proposal(_title, _description, 0, 0, 0, _total_vote_to_end, false, true);
     }
 
+    function vote(uint8 choice) external {
+        Proposal storage proposal = proposal_history[counter];
+        uint256 total_vote = proposal.approve + proposal.reject + proposal.pass;
+
+        if (choice == 1) {
+            proposal.approve += 1;
+            proposal.current_state = calculateCurrentState();
+        } else if (choice == 2) {
+            proposal.reject += 1;
+            proposal.current_state = calculateCurrentState();
+        } else if (choice == 0) {
+            proposal.pass += 1;
+            proposal.current_state = calculateCurrentState();
+        }
+
+        if ((proposal.total_vote_to_end - total_vote == 1) && (choice == 1 || choice == 2 || choice == 0)) {
+            proposal.is_active = false;
+
+        }
+    }
 }
