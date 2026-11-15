@@ -46,7 +46,7 @@ contract ProposalContract {
     }
 
 
-//     // ****************** Execute Functions ***********************
+    // ****************** Execute Functions ***********************
 
 
     function setOwner(address new_owner) external onlyOwner {
@@ -82,23 +82,37 @@ contract ProposalContract {
         }
     }
 
+
+    // ****************** Query Functions ***********************
+
+    function isVoted(address _address) public view returns (bool) {
+        for (uint256 i = 0; i < voted_addresses.length; i++) {
+            if (voted_addresses[i] == _address) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    // ****************** Internal Functions ***********************
+
+    // Own logic: pass votes count as abstentions and are ignored.
+    // The proposal succeeds if at least two thirds of the decisive votes
+    // (approve + reject) are approve votes (qualified majority).
     function calculateCurrentState() private view returns(bool) {
         Proposal storage proposal = proposal_history[counter];
 
         uint256 approve = proposal.approve;
         uint256 reject = proposal.reject;
-        uint256 pass = proposal.pass;
-        
-        if (proposal.pass %2 == 1) {
-            pass += 1;
-        }
-    
-        pass = pass / 2;
-    
-        if (approve > reject + pass) {
-            return true;
-        } else {
+        uint256 decisive = approve + reject;
+
+        // Only abstentions so far -> nothing to decide, proposal fails
+        if (decisive == 0) {
             return false;
         }
+
+        // approve / decisive >= 2/3  <=>  approve * 3 >= decisive * 2
+        return approve * 3 >= decisive * 2;
     }
 }
